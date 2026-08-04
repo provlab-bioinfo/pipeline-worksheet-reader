@@ -5,8 +5,8 @@ setup(
     version='0.1.0-alpha',
     packages=find_packages(exclude=['tests*']),
     install_requires=[
-        'alive_progress',
         'pandas',
+        'openpyxl',
         'setuptools'
     ],
     python_requires='>=3.10, <4',

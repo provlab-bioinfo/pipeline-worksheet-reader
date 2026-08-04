@@ -1,12 +1,6 @@
-import os, re, io, pickle, glob, random, copy, shutil, logging, errno, hashlib, gzip
-import pandas as pd
-import openpyxl as xl
-from configparser import ConfigParser
-from pathlib import Path
-from contextlib import suppress
-from alive_progress import alive_bar
-from itertools import chain
-from collections import defaultdict
+import os, re, io, glob, tempfile
+import pandas as pd; import openpyxl as xl
+from configparser import ConfigParser; from pathlib import Path
 
 class PipelineWorksheet:
 
