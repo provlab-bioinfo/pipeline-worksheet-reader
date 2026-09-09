@@ -21,5 +21,11 @@ $ pip install git+https://github.com/provlab-bioinfo/pipeline-worksheet-reader
 Access in python:
 
 ```python
->>> import pipeline-worksheet-reader
+import pipeline_worksheet_reader as pwr
+r = pwr.PipelineWorksheet("./example/PipelineWorksheet.xlsx")
+r.getRunName()
+r.getRunDir()
+r.getSamples()
+r.getOutputDir()
+r.getPipelines()
 ```

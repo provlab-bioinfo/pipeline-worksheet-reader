@@ -37,7 +37,7 @@ class PipelineWorksheet:
             df = pd.read_csv(buf, header=None, names=header)
         else:
             df = pd.read_csv(buf)
-        return (df)
+        return (df.dropna(subset=['Sample_Group']))
     
     def getRunName(self:object) -> str:
         """Gets the run name from a pipeline worksheet
@@ -64,7 +64,7 @@ class PipelineWorksheet:
         outdirs = self.getDataFrame("Directories",header=["Sample_Group","Directory"])
         samples = self.getSamples()["Sample_Group"]
         result = pd.merge(outdirs, samples, on='Sample_Group', how='right')
-        return result
+        return result.drop_duplicates()
     
     def getPipelines(self:object) -> pd.DataFrame:
         """Gets the pipeline scripts for each Sample_Group in the worksheet.
@@ -73,4 +73,4 @@ class PipelineWorksheet:
         scripts = self.getDataFrame("Pipelines",header=["Sample_Group","Script"])
         samples = self.getSamples()["Sample_Group"]
         result = pd.merge(scripts, samples, on='Sample_Group', how='right')
-        return result
+        return result.drop_duplicates()

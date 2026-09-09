@@ -1,6 +1,7 @@
 data/
 results/
 work/
+test/
 .vscode/
 config.json
 
