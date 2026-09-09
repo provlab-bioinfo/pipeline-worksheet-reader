@@ -22,9 +22,9 @@ class PipelineWorksheet:
         dict = {k:v[0] for k, v in dict.items() if v} # Removes blank keys and keep only first column after var
         return (dict)
 
-    def getDataFrame(self:object, section:str):
-        """Generates a DataFrame from a [HEADER] section
-        :param section: The name of the section
+    def getDataFrame(self:object, section:str, header:list = []) -> pd.DataFrame:
+        """Generates a DataFrame from a [DEFINED] section
+        :param section: The name of the section. Typically 'PIPELINES', 'DIRECTORIES', or 'SAMPLES'.
         :return: A DataFrame representing the sections
         """ 
         cfg = ConfigParser(allow_no_value=True)
@@ -33,7 +33,10 @@ class PipelineWorksheet:
         buf = io.StringIO()
         buf.writelines('\n'.join(row.rstrip(',') for row in cfg[section]))
         buf.seek(0)
-        df = pd.read_csv(buf)
+        if header:
+            df = pd.read_csv(buf, header=None, names=header)
+        else:
+            df = pd.read_csv(buf)
         return (df)
     
     def getRunName(self:object) -> str:
@@ -53,3 +56,21 @@ class PipelineWorksheet:
         :return: The sample metadata. At miniminum, these columns: Barcode, Plate_Pos, Sample_Group, and Control
         """ 
         return self.getDataFrame("Samples")
+    
+    def getOutputDir(self:object):
+        """Gets the output directories for each Sample_Group in the worksheet.
+        :return: The output directories for each Sample_Group in the format of Sample_Group, Directory.
+        """
+        outdirs = self.getDataFrame("Directories",header=["Sample_Group","Directory"])
+        samples = self.getSamples()["Sample_Group"]
+        result = pd.merge(outdirs, samples, on='Sample_Group', how='right')
+        return result
+    
+    def getPipelines(self:object):
+        """Gets the pipeline scripts for each Sample_Group in the worksheet.
+        :return: The output directories for each Sample_Group in the format of Sample_Group, Script.
+        """
+        scripts = self.getDataFrame("Pipelines",header=["Sample_Group","Script"])
+        samples = self.getSamples()["Sample_Group"]
+        result = pd.merge(scripts, samples, on='Sample_Group', how='right')
+        return result
