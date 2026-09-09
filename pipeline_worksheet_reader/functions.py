@@ -35,3 +35,21 @@ class PipelineWorksheet:
         buf.seek(0)
         df = pd.read_csv(buf)
         return (df)
+    
+    def getRunName(self:object) -> str:
+        """Gets the run name from a pipeline worksheet
+        :return: The run name
+        """ 
+        return self.getDataVar("Header")["Run_Name"]
+    
+    def getRunDir(self:object) -> str:
+        """Gets the run directory from a pipeline worksheet
+        :return: The run directory
+        """ 
+        return self.getDataVar("Header")["Run_Dir"]
+    
+    def getSamples(self:object):
+        """Gets a dataframe containing the sample information from a pipeline worksheet. See documentation for the ngs-pipeline-launcher for column limitations.
+        :return: The sample metadata. At miniminum, these columns: Barcode, Plate_Pos, Sample_Group, and Control
+        """ 
+        return self.getDataFrame("Samples")
