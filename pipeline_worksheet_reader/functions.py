@@ -10,7 +10,7 @@ class PipelineWorksheet:
         df = pd.read_excel(path)        
         df.to_csv(self.csv, index=False)
 
-    def getDataVar(self:object, section:str):
+    def getDataVar(self:object, section:str) -> dict:
         """Generates a dictionary from the first two columns of a [HEADER] section
         :param section: The name of the section
         :return: A dictionary containing variable keys
@@ -51,13 +51,13 @@ class PipelineWorksheet:
         """ 
         return self.getDataVar("Header")["Run_Dir"]
     
-    def getSamples(self:object):
+    def getSamples(self:object) -> pd.DataFrame:
         """Gets a dataframe containing the sample information from a pipeline worksheet. See documentation for the ngs-pipeline-launcher for column limitations.
         :return: The sample metadata. At miniminum, these columns: Barcode, Plate_Pos, Sample_Group, and Control
         """ 
         return self.getDataFrame("Samples")
     
-    def getOutputDir(self:object):
+    def getOutputDir(self:object) -> pd.DataFrame:
         """Gets the output directories for each Sample_Group in the worksheet.
         :return: The output directories for each Sample_Group in the format of Sample_Group, Directory.
         """
@@ -66,7 +66,7 @@ class PipelineWorksheet:
         result = pd.merge(outdirs, samples, on='Sample_Group', how='right')
         return result
     
-    def getPipelines(self:object):
+    def getPipelines(self:object) -> pd.DataFrame:
         """Gets the pipeline scripts for each Sample_Group in the worksheet.
         :return: The output directories for each Sample_Group in the format of Sample_Group, Script.
         """
