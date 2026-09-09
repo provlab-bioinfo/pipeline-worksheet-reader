@@ -22,7 +22,10 @@ Access in python:
 
 ```python
 import pipeline_worksheet_reader as pwr
+r = pwr.PipelineWorksheet("./example/")
 r = pwr.PipelineWorksheet("./example/PipelineWorksheet.xlsx")
+print(r)
+r.getSheetPath()
 r.getRunName()
 r.getRunDir()
 r.getSamples()

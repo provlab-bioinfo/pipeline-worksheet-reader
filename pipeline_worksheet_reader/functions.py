@@ -1,14 +1,37 @@
-import io, tempfile
+import io, tempfile, os
 import pandas as pd
+from pathlib import Path
 from configparser import ConfigParser
 
 class PipelineWorksheet:
 
     def __init__(self, path):
-        self.xlsx = path
+        if os.path.isdir(path):
+            worksheets = [str(p) for p in Path(path).rglob("PipelineWorksheet.xlsx")]
+            if (len(worksheets) > 1): # If more than 1 file is found
+                raise Exception(f"More than one pipeline worksheet identified. Only 1 filename can contain 'PipelineWorksheet'. Found:\n{worksheets}.")
+            path, *remainder = worksheets
         self.csv = tempfile.NamedTemporaryFile().name
+        self.path = path
         df = pd.read_excel(path)        
         df.to_csv(self.csv, index=False)
+
+    def __str__(self):
+        msg = (
+            f"Path: {Path(self.path).resolve()}\n"
+            f"RunName: {self.getRunName()}\n"
+            f"RunDir: {self.getRunDir()}\n\n"
+            f"Pipelines\n"
+            f"---------\n"
+            f"{self.getPipelines().to_string(index=False)}\n\n"
+            f"Directories\n"
+            f"-----------\n"
+            f"{self.getOutputDir().to_string(index=False)}\n\n"
+            f"Samples\n"
+            f"--------\n"
+            f"{self.getSamples().to_string(index=False)}\n"
+        )
+        return (msg)
 
     def getDataVar(self:object, section:str) -> dict:
         """Generates a dictionary from the first two columns of a [HEADER] section
@@ -39,6 +62,12 @@ class PipelineWorksheet:
             df = pd.read_csv(buf)
         return (df.dropna(subset=['Sample_Group']))
     
+    def getSheetPath(self:object) -> str:
+        """Gets the run name from a pipeline worksheet
+        :return: The run name
+        """ 
+        return self.path
+
     def getRunName(self:object) -> str:
         """Gets the run name from a pipeline worksheet
         :return: The run name
