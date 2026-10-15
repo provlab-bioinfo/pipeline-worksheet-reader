@@ -1,4 +1,4 @@
-import io, tempfile, os
+import io, tempfile, os, difflib
 import pandas as pd
 from pathlib import Path
 from configparser import ConfigParser
@@ -26,10 +26,10 @@ class PipelineWorksheet:
             f"{self.getPipelines().to_string(index=False)}\n\n"
             f"Directories\n"
             f"-----------\n"
-            f"{self.getOutputDir().to_string(index=False)}\n\n"
+            f"{self.getOutputDirs().to_string(index=False)}\n\n"
             f"Samples\n"
             f"--------\n"
-            f"{self.getSamples().to_string(index=False)}\n"
+            f"{self.getSampleData().to_string(index=False)}\n"
         )
         return (msg)
 
@@ -80,18 +80,24 @@ class PipelineWorksheet:
         """ 
         return self.getDataVar("Header")["Run_Dir"]
     
-    def getSamples(self:object) -> pd.DataFrame:
+    def getSampleData(self:object) -> pd.DataFrame:
         """Gets a dataframe containing the sample information from a pipeline worksheet. See documentation for the ngs-pipeline-launcher for column limitations.
         :return: The sample metadata. At miniminum, these columns: Barcode, Plate_Pos, Sample_Group, and Control
         """ 
         return self.getDataFrame("Samples")
     
-    def getOutputDir(self:object) -> pd.DataFrame:
+    def getMetaData(self:object) -> pd.DataFrame:
+        """Gets a dataframe containing the sample information from a pipeline worksheet. See documentation for the ngs-pipeline-launcher for column limitations.
+        :return: The sample metadata. At miniminum, these columns: Barcode, and Control
+        """ 
+        return self.getDataFrame("Samples").drop(columns=['Plate_Pos', 'Sample_Group'])
+    
+    def getOutputDirs(self:object) -> pd.DataFrame:
         """Gets the output directories for each Sample_Group in the worksheet.
         :return: The output directories for each Sample_Group in the format of Sample_Group, Directory.
         """
         outdirs = self.getDataFrame("Directories",header=["Sample_Group","Directory"])
-        samples = self.getSamples()["Sample_Group"]
+        samples = self.getSampleData()["Sample_Group"]
         result = pd.merge(outdirs, samples, on='Sample_Group', how='right')
         return result.drop_duplicates()
     
@@ -100,6 +106,6 @@ class PipelineWorksheet:
         :return: The output directories for each Sample_Group in the format of Sample_Group, Script.
         """
         scripts = self.getDataFrame("Pipelines",header=["Sample_Group","Script"])
-        samples = self.getSamples()["Sample_Group"]
+        samples = self.getSampleData()["Sample_Group"]
         result = pd.merge(scripts, samples, on='Sample_Group', how='right')
         return result.drop_duplicates()
