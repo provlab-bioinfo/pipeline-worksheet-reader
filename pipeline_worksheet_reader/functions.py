@@ -109,3 +109,31 @@ class PipelineWorksheet:
         samples = self.getSampleData()["Sample_Group"]
         result = pd.merge(scripts, samples, on='Sample_Group', how='right')
         return result.drop_duplicates()
+    
+    def fuzzyMerge(self:object, data:pd.DataFrame, merge_on:str, drop_cols:list = ["Barcode", "Sample_Group", "Control"]) -> pd.DataFrame:
+        """Attempts to merge metadata from a pipeline worksheet to another file. This is useful because the sample name usually contains the barcode, but also contains other necessary data (e.g., sample '260903_N_I_092_4_S4_L001' uses barcode '4').
+        :param data: A dataframe containing the data to be collated to the metadata in the pipeline worksheet
+        :param merge_on: The column in 'data' for which to merge against the metadata in the pipeline worksheet
+        :param drop_cols: Columns to drop from the final output. By default, drops 'Barcode', 'Sample_Group', and 'Control', which are the most basic columns in the pipeline worksheet.
+        :return: The same format as the input data frame, with the addition of the metadata columns from the pipeline worksheet.
+        """
+        metadata = self.getSampleData()
+        metadata["Barcode"] = metadata["Barcode"].astype('string')
+
+        # Find common suffix and prefixes
+        prefix = os.path.commonprefix(data[merge_on].tolist())
+        suffix = [id[::-1] for id in data[merge_on]]
+        suffix = os.path.commonprefix(suffix)[::-1]
+
+        # Create new column to merge on
+        merge_on_barcode = merge_on+"_barcode"
+        data[merge_on_barcode] = data[merge_on]
+        data[merge_on_barcode] = data[merge_on_barcode].str.removeprefix(prefix)
+        data[merge_on_barcode] = data[merge_on_barcode].str.removesuffix(suffix)
+
+        # Find closest matches
+        data[merge_on_barcode] = data[merge_on_barcode].map(lambda x: difflib.get_close_matches(x, metadata["Barcode"], n=1, cutoff=0.2)[0])
+
+        # Merge and subset non-metadata columns
+        result = data.merge(metadata, left_on=merge_on_barcode, right_on="Barcode").drop(columns=[merge_on_barcode]+drop_cols)
+        return result
