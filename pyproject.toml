@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "A reader for NGS pipeline worksheets used with the [provlab-bioinfo/ngs-pipeline-launcher](https://github.com/provlab-bioinfo/ngs-pipeline-launcher)."
 readme = "README.md"
 license = "GPL-3.0-only"
-requires-python = ">=3.10, <4"
+requires-python = ">=3.11, <4"
 authors = [
     { name = "Andrew Lindsay", email = "andrew.lindsay@albertaprecisionlabs.ca" },
 ]
