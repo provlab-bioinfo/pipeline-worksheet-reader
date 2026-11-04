@@ -1,4 +1,4 @@
-import pytest
+import pytest, os, tempfile
 import pipeline_worksheet_reader.functions as pwr
 
 def test_bad_input(): # Check for bad input
@@ -16,19 +16,27 @@ def test_pw_load():
     assert(str(pw) == str(pw2))
 
     # Check the string output
-    assert("Path:" in str(pw))     # Check there's string output when calling obj alone
+    assert("Path:" in str(pw))
+
+def test_temp_pw():
+    # Check that temp files are ignored
+    with tempfile.NamedTemporaryFile(dir="./examples/", prefix="~$", suffix="_PipelineWorksheet.xlsx", mode="w") as temp_file:
+        pwr.PipelineWorksheet("./examples/")
+
+def test_multiple_pw():
+    # Check for error if mutiple pipeline worksheets are present
+    with tempfile.NamedTemporaryFile(dir="./examples/", suffix="_PipelineWorksheet.xlsx", mode="w") as temp_file:
+        with pytest.raises(Exception): 
+            pwr.PipelineWorksheet("./examples/")
 
 def test_getters():
     pw = pwr.PipelineWorksheet("./examples/PipelineWorksheet.xlsx")
-    
     # Check the getters
     assert('str' in str(type(pw.getDataVar("Header")["Run_Name"]))) 
     assert('pandas.DataFrame' in str(type(pw.getDataFrame("Samples"))))
 
 def test_outputs():
-
     pw = pwr.PipelineWorksheet("./examples/PipelineWorksheet.xlsx")
-
     # Check the file/header info
     assert(pw.getSheetPath() == './examples/PipelineWorksheet.xlsx')
     assert(pw.getRunName() == '230711_N_I_063')
