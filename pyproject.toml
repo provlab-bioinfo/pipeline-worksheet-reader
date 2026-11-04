@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==67.6.1"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -13,8 +13,8 @@ authors = [
     { name = "Andrew Lindsay", email = "andrew.lindsay@albertaprecisionlabs.ca" },
 ]
 dependencies = [
-    "pandas==2.0.0",
-    "openpyxl==3.1.2"
+    "pandas==3.0.6",
+    "openpyxl==3.1.5"
 ]
 
 [project.urls]
