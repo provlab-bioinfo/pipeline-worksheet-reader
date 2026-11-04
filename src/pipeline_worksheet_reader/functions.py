@@ -11,13 +11,15 @@ class PipelineWorksheet:
         :param path: The path to the file or directory
         """    
         if os.path.isdir(path):
-            worksheets = [str(p) for p in Path(path).rglob("PipelineWorksheet.xlsx")]
+            worksheets = [str(p) for p in Path(path).rglob("*PipelineWorksheet.xlsx")]
+            worksheets[:] = [i for i in worksheets if "~$" not in i] # Ignore the temp version
             if (len(worksheets) > 1): # If more than 1 file is found
                 raise Exception(f"More than one pipeline worksheet identified. Only 1 filename can contain 'PipelineWorksheet'. Found:\n{worksheets}.")
             path, *remainder = worksheets
         self.csv = tempfile.NamedTemporaryFile().name
         self.path = path
-        df = pd.read_excel(path)        
+        with open(path, "rb") as file: # Ignores file lock if open
+            df = pd.read_excel(file)    
         df.to_csv(self.csv, index=False)
 
     def __str__(self):

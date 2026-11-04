@@ -1,20 +1,20 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pipeline_worksheet_reader"
 version = "1.0.0"
-description = "A reader for NGS pipeline worksheets at APL."
+description = "A reader for NGS pipeline worksheets used with the [provlab-bioinfo/ngs-pipeline-launcher](https://github.com/provlab-bioinfo/ngs-pipeline-launcher)."
 readme = "README.md"
 license = "GPL-3.0-only"
-requires-python = ">=3.10, <4"
+requires-python = ">=3.11, <4"
 authors = [
     { name = "Andrew Lindsay", email = "andrew.lindsay@albertaprecisionlabs.ca" },
 ]
 dependencies = [
-    "pandas",
-    "openpyxl"
+    "pandas==3.0.6",
+    "openpyxl==3.1.5"
 ]
 
 [project.urls]
@@ -23,3 +23,12 @@ Homepage = "https://github.com/provlab-bioinfo/pipeline-worksheet-reader"
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = false
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "nox==2026.10.20"
+]

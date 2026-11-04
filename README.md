@@ -30,20 +30,22 @@ Access in python:
 
 ```python
 >>> import pipeline_worksheet_reader as pwr
->>> r = pwr.PipelineWorksheet("./example/")
->>> r = pwr.PipelineWorksheet("./example/PipelineWorksheet.xlsx")
+>>> r = pwr.PipelineWorksheet("./examples/")
+>>> r = pwr.PipelineWorksheet("./examples/PipelineWorksheet.xlsx")
 >>> print(r)
 >>> r.getSheetPath()
 >>> r.getRunName()
 >>> r.getRunDir()
 >>> r.getSampleData()
+>>> r.getMetaData()
 >>> r.getOutputDirs()
 >>> r.getPipelines()
 
 >>> import pandas as pd
->>> data = pd.read_csv('example/Nextclade.tsv', sep='\t')
+>>> data = pd.read_csv('examples/Nextclade.tsv', sep='\t')
 >>> r.fuzzyMerge(data,"seqName")
 ```
 
 ## References
+
 1. **Provlab-Bioinfo/ngs-pipeline-launcher:** A launcher tool for sorting sequencing runs and automatic initialization of their downstream pipelines. [https://github.com/provlab-bioinfo/ngs-pipeline-launcher](https://github.com/provlab-bioinfo/ngs-pipeline-launcher)
