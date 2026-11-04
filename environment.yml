@@ -1,9 +1,0 @@
-name: pipeline-worksheet-reader
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - python=3.10
-  - pip
-  - pip:
-    - -r requirements.txt

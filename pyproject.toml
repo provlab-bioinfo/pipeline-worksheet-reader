@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pipeline_worksheet_reader"
+version = "1.0.0"
+description = "A reader for NGS pipeline worksheets at APL."
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.10, <4"
+authors = [
+    { name = "Andrew Lindsay", email = "andrew.lindsay@albertaprecisionlabs.ca" },
+]
+dependencies = [
+    "pandas",
+    "openpyxl"
+]
+
+[project.urls]
+Homepage = "https://github.com/provlab-bioinfo/pipeline-worksheet-reader"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
