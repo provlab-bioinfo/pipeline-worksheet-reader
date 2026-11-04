@@ -14,7 +14,7 @@ authors = [
 ]
 dependencies = [
     "pandas",
-    "openpyxl",
+    "openpyxl"
 ]
 
 [project.urls]
