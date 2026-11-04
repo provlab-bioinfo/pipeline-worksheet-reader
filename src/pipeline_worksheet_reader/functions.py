@@ -6,6 +6,10 @@ from configparser import ConfigParser
 class PipelineWorksheet:
 
     def __init__(self, path):
+        """Loads a pipeline worksheet from a file or directory it's contained in. The filename must match '*PipelineWorksheet.xlsx'.
+        :raises Exception: If more than 1 worksheet is found in a directory.
+        :param path: The path to the file or directory
+        """    
         if os.path.isdir(path):
             worksheets = [str(p) for p in Path(path).rglob("PipelineWorksheet.xlsx")]
             if (len(worksheets) > 1): # If more than 1 file is found
@@ -17,6 +21,9 @@ class PipelineWorksheet:
         df.to_csv(self.csv, index=False)
 
     def __str__(self):
+        """ Creates a text representation of the pipeline worksheet contents.
+        :return: A string 
+        """    
         msg = (
             f"Path: {Path(self.path).resolve()}\n"
             f"RunName: {self.getRunName()}\n"
